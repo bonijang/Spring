@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -24,6 +25,7 @@
     }
     button, input {
         padding: 10px;
+        border: 1px solid #ccc;
     }
     div.errors {
         background-color: #ff00004a;
@@ -34,16 +36,46 @@
     div.errors:last-child {
         margin-bottom: 15px;
     }
+    .available {
+        background-color: #0f03;
+    }
+    .unusable {
+        background-color: #f003;
+    }
 </style>
+<script src="/js/lib/jquery-3.7.1.js"></script>
+<script type='text/javascript'>
+    $().ready(function() {
+        $("#email").keyup(function() {
+            $.get("/member/regist/available", {
+                email: $("#email").val()
+            }, function(response) {
+                var email = response.email
+                var available = response.available
+
+                if(available) {
+                    $("#email").addClass("available")
+                    $("#email").removeClass("unusable")
+                    $("#btn-regist").removeAttr("diabled")
+                }
+                else {
+                    $("#email").addClass("unusable")
+                    $("#email").removeClass("available")
+                    $("#btn-regist").attr("disabled", "disabled")
+                }
+            })
+        })
+    })
+</script>
 </head>
 <body>
     <h1>회원가입</h1>
     <form:form modelAttribute="memberVO" method="post">
         <div>
-            <form:errors path="email" element="div" ccsClass="errors" />
-            <form:errors path="name" element="div" ccsClass="errors" />
-            <form:errors path="password" element="div" ccsClass="errors" />
-            <form:errors path="confirmPassword" element="div" ccsClass="errors" />
+            <form:errors path="email" element="div" cssClass="errors" />
+            <form:errors path="name" element="div" cssClass="errors" />
+            <form:errors path="password" element="div" cssClass="errors" />
+            <form:errors path="confirmPassword" element="div" cssClass="errors" />
         </div>
         <div class="grid">
             <label for="email">이메일</label>
@@ -63,7 +95,8 @@
 
             <div class="btn-group">
                 <div class="right-align">
-                    <input type="submit" value="등록" />
+                    <input id="btn-regist" disabled="disabled" 
+                           type="submit" value="등록" />
                 </div>
             </div>
         </div>

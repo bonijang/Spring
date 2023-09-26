@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-
+<%@taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -29,12 +29,31 @@
 	input[type=file] {
 		padding: 0px;
 	}
+	div.errors{
+		background-color: #ff00004a;
+		opacity: 0.8;
+		padding: 10px;
+		color: #333;
+	}
+	div.errors:last-child{
+		margin-bottom: 15px;
+	}
 	
 </style>
 </head>
 <body>
 	<h1>게시글 작성</h1>
-	<form method="post" enctype="multipart/form-data">
+	<form:form modelAttribute="boardVO" method="post" 
+	           enctype="multipart/form-data">
+		<!-- 
+		@Valid 중 실패한 내용이 있다면
+		BindingResult 에 존재하는 내용들을 출력한다.
+		 -->
+		<div>
+			<form:errors path="subject" element="div" cssClass="errors" />
+			<form:errors path="email" element="div" cssClass="errors" />
+			<form:errors path="content" element="div" cssClass="errors" />
+		</div>
 		<div class="grid">
 			<label for="subject">제목</label>
 			<input id="subject" type="text" name="subject" value="${boardVO.subject}" />
@@ -54,6 +73,6 @@
 				</div>
 			</div>
 		</div>
-	</form>
+	</form:form>
 </body>
 </html>

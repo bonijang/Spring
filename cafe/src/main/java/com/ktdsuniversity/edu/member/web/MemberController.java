@@ -1,11 +1,16 @@
 package com.ktdsuniversity.edu.member.web;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.ktdsuniversity.edu.member.service.MemberService;
@@ -32,6 +37,7 @@ public class MemberController {
 		if (bindingResult.hasErrors()) {
 			modelAndView.setViewName("member/memberregist");
 			modelAndView.addObject("memberVO", memberVO);
+			return modelAndView;
 		}
 		
 		boolean isSuccess = memberService.createNewMember(memberVO);
@@ -42,6 +48,19 @@ public class MemberController {
 		modelAndView.setViewName("member/memberregist");
 		modelAndView.addObject("memberVO", memberVO);
 		return modelAndView;
+	}
+	
+	@ResponseBody // 응답데이터를 JSON으로 변환하여 브라우저에게 전송한다.
+	@GetMapping("/member/regist/available")
+	public Map<String, Object> checkAvailableEmail(
+			@RequestParam String email) {
+		boolean isAvailableEmail = memberService.checkAvailableEmail(email);
+		
+		Map<String, Object> responseMap = new HashMap<>();
+		responseMap.put("email", email);
+		responseMap.put("available", isAvailableEmail);
+		// Map을 Return하면 @ResponseBody에 의해 JSON으로 변환되어 응답된다.
+		return responseMap;
 	}
 
 }

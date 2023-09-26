@@ -13,13 +13,24 @@ public class MemberServiceImpl implements MemberService {
 	private MemberDAO memberDAO;
 	
 	@Override
+	public boolean checkAvailableEmail(String email) {
+		int emailCount = memberDAO.getEmailCount(email);
+		return emailCount == 0;
+	}
+	
+	@Override
 	public boolean createNewMember(MemberVO memberVO) {
 		int emailCount = memberDAO.getEmailCount(memberVO.getEmail());
 		if (emailCount > 0) {
 			throw new IllegalArgumentException("Email이 이미 사용중입니다.");
 		}
+		// TODO 암호화 처리 한 이후에 삭제해야 함.
+		memberVO.setSalt("-");
+		
 		int insertCount = memberDAO.createNewMember(memberVO);
 		return insertCount > 0;
 	}
+
+	
 
 }
