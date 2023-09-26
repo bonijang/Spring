@@ -56,7 +56,7 @@
                 if(available) {
                     $("#email").addClass("available")
                     $("#email").removeClass("unusable")
-                    $("#btn-regist").removeAttr("diabled")
+                    $("#btn-regist").removeAttr("disabled")
                 }
                 else {
                     $("#email").addClass("unusable")
