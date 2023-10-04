@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.SessionAttribute;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -20,6 +21,7 @@ import com.ktdsuniversity.edu.bbs.service.BoardService;
 import com.ktdsuniversity.edu.bbs.vo.BoardListVO;
 import com.ktdsuniversity.edu.bbs.vo.BoardVO;
 import com.ktdsuniversity.edu.beans.FileHandler;
+import com.ktdsuniversity.edu.member.vo.MemberVO;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -56,7 +58,8 @@ public class BoardController {
 									// @Valid 바로 다음에 있어야 한다. (순서가 매우 중요)
 								   , BindingResult bindingResult 
 								   , @RequestParam MultipartFile file
-								   , HttpServletRequest request) {
+								   , HttpServletRequest request
+								   , @SessionAttribute("_LOGIN_USER_") MemberVO memberVO) {
 		// 요청자의 IP 정보를 ipAddr 변수에 할당한다.
 		boardVO.setIpAddr(request.getRemoteAddr());
 		
@@ -78,7 +81,7 @@ public class BoardController {
 			return modelAndView;
 		}
 		
-		
+		boardVO.setEmail(memberVO.getEmail());
 		// 게시글 등록한다.
 		boolean isSuccess = boardService.createNewBoard(boardVO, file);
 		// 게시글 등록결과가 성공이라면
@@ -136,11 +139,16 @@ public class BoardController {
 	
 	// http://localhost:8080/board/modify/1
 	@GetMapping("/board/modify/{id}")
-	public String viewBoardModifyPage(@PathVariable int id, Model model) {
+	public String viewBoardModifyPage(@PathVariable int id
+			                        , Model model
+			                        , @SessionAttribute("_LOGIN_USER_") MemberVO memberVO) {
 		System.out.println("PathVariable: " + id);
 		
 		// 수정할 게시글을 조회.
 		BoardVO boardVO = boardService.getOneBoard(id, false);
+		if(!boardVO.getEmail().equals(memberVO.getEmail())) {
+			throw new IllegalArgumentException("잘못된 접근입니다!");
+		}
 		
 		// View에게 boardVO 라는 이름으로 boardVO를 전달한다.
 		model.addAttribute("boardVO", boardVO);
@@ -150,7 +158,8 @@ public class BoardController {
 	@PostMapping("/board/modify")
 	public String doBoardUpdate(@ModelAttribute BoardVO boardVO
 							    , @RequestParam MultipartFile file
-							    , Model model) {
+							    , Model model
+							    , @SessionAttribute("_LOGIN_USER_") MemberVO memberVO) {
 		System.out.println("제목: " + boardVO.getSubject());
 		System.out.println("이메일: " + boardVO.getEmail());
 		System.out.println("내용: " + boardVO.getContent());
@@ -158,6 +167,13 @@ public class BoardController {
 		System.out.println("수정일: " + boardVO.getMdfyDt());
 		System.out.println("FileName: " + boardVO.getFileName());
 		System.out.println("OriginFileName: " + boardVO.getOriginFileName());
+		
+
+		// 수정할 게시글을 조회.
+		BoardVO originBoardVO = boardService.getOneBoard(boardVO.getId(), false);
+		if(!originBoardVO.getEmail().equals(memberVO.getEmail())) {
+			throw new IllegalArgumentException("잘못된 접근입니다!");
+		}
 		
 		// 게시글 수정
 		boolean isSuccess = boardService.updateOneBoard(boardVO, file);
@@ -174,7 +190,14 @@ public class BoardController {
 		}
 	}
 	@GetMapping("/board/delete/{id}")
-	public String doDeleteBoard(@PathVariable int id) {
+	public String doDeleteBoard(@PathVariable int id
+			                  , @SessionAttribute("_LOGIN_USER_") MemberVO memberVO) {
+		
+		// 삭제할 게시글을 조회.
+		BoardVO originBoardVO = boardService.getOneBoard(id, false);
+		if(!originBoardVO.getEmail().equals(memberVO.getEmail())) {
+			throw new IllegalArgumentException("잘못된 접근입니다!");
+		}
 		boolean isSuccess = boardService.deleteOneBoard(id);
 		if (isSuccess) {
 			return "redirect:/board/list";

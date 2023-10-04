@@ -54,15 +54,11 @@
 		 -->
 		<div>
 			<form:errors path="subject" element="div" cssClass="errors" />
-			<form:errors path="email" element="div" cssClass="errors" />
 			<form:errors path="content" element="div" cssClass="errors" />
 		</div>
 		<div class="grid">
 			<label for="subject">제목</label>
 			<input id="subject" type="text" name="subject" value="${boardVO.subject}" />
-			
-			<label for="email">이메일</label>
-			<input id="email" type="email" name="email" value="${boardVO.email}"/>
 			
 			<label for="email">첨부파일</label>
 			<div>

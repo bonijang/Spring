@@ -89,7 +89,7 @@
 									&lt;<c:out value="${board.subject}" />&gt;
 								</a>
 							</td>
-							<td>${board.email}</td>
+							<td>${board.memberVO.name} (${board.email})</td>
 							<td>${board.viewCnt}</td>
 							<td>${board.crtDt}</td>
 							<td>${board.mdfyDt}</td>
@@ -104,9 +104,11 @@
 			</c:choose>
 			</tbody>
 		</table>
-		<div class="right-align">
-			<a href="/board/write">게시글 등록</a>
-		</div>
+		<c:if test="${not empty sessionScope._LOGIN_USER_}">
+			<div class="right-align">
+				<a href="/board/write">게시글 등록</a>
+			</div>
+		</c:if>
 	</div>
 </body>
 </html>

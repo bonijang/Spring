@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@taglib prefix="c" uri="jakarta.tags.core" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -41,7 +42,7 @@
 		<div>${boardVO.subject}</div>
 		
 		<label for="email">이메일</label>
-		<div>${boardVO.email} / ${boardVO.ipAddr}</div>
+		<div>${boardVO.memberVO.name} (${boardVO.email}) / ${boardVO.ipAddr}</div>
 		
 		<label for="viewCnt">조회수</label>
 		<div>${boardVO.viewCnt}</div>
@@ -63,10 +64,12 @@
 		<div>${boardVO.content}</div>
 		
 		<div class="btn-group">
-			<div class="right-align">
-				<a href="/board/modify/${boardVO.id}">수정</a>
-				<a href="/board/delete/${boardVO.id}">삭제</a>
-			</div>
+			<c:if test="${sessionScope._LOGIN_USER_.email eq boardVO.email}">
+				<div class="right-align">
+					<a href="/board/modify/${boardVO.id}">수정</a>
+					<a href="/board/delete/${boardVO.id}">삭제</a>
+				</div>
+			</c:if>
 		</div>
 	</div>
 
