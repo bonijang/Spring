@@ -64,7 +64,7 @@
 		<div>${boardVO.content}</div>
 		
 		<div class="btn-group">
-			<c:if test="${sessionScope._LOGIN_USER_.email eq boardVO.email}">
+			<c:if test="${not empty sessionScope._LOGIN_USER_ && sessionScope._LOGIN_USER_.email eq boardVO.memberVO.email}">
 				<div class="right-align">
 					<a href="/board/modify/${boardVO.id}">수정</a>
 					<a href="/board/delete/${boardVO.id}">삭제</a>
