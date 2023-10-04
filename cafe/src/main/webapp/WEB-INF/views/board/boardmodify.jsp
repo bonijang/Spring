@@ -41,6 +41,9 @@
 </style>
 </head>
 <body>
+	
+	<jsp:include page="../member/membermenu.jsp"></jsp:include>
+	
 	<h1>게시글 수정</h1>
 	<form:form modelAttribute="boardVO" method="post" 
 	           enctype="multipart/form-data" action="/board/modify">

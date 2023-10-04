@@ -32,6 +32,9 @@
 </style>
 </head>
 <body>
+
+	<jsp:include page="../member/membermenu.jsp"></jsp:include>
+	
 	<h1>게시글 작성</h1>
 	<div class="grid">
 		<label for="subject">제목</label>

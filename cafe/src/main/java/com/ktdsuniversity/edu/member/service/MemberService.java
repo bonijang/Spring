@@ -18,5 +18,17 @@ public interface MemberService {
 	 */
 	public boolean createNewMember(MemberVO memberVO);
 	
+	/**
+	 * 이메일과 비밀번호로 회원정보를 조회
+	 * @param memberVO 이메일과 비밀번호
+	 * @return 이메일과 비밀번호가 일치하는 회원의 정보
+	 */
+	public MemberVO getMember(MemberVO memberVO);
 	
+	/**
+	 * 회원을 탈퇴시킨다.
+	 * @param email 탈퇴시킬 회원의 이메일
+	 * @return 탈퇴 성공 여부
+	 */
+	public boolean deleteMe(String email);
 }

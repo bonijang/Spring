@@ -44,16 +44,26 @@
 	div.grid {
 		display: grid;
 		grid-template-columns: 1fr;
-		grid-template-rows: 28px 1fr 28px;
+		grid-template-rows: 28px 28px 1fr 28px;
 		row-gap: 10px;
 	}
 	div.grid div.right-align {
 		text-align: right;
 	}
+	
+	ul.horizontal-list {
+		padding: 0px;
+		margin: 0px;
+	}
+	ul.horizontal-list li {
+		display: inline;
+	}
+	
 </style>
 </head>
 <body>
 	<div class="grid">
+		<jsp:include page="../member/membermenu.jsp"></jsp:include>
 		<div class="right-align">
 			총 ${boardList.boardCnt} 건의 게시글이 검색되었습니다.
 		</div>
