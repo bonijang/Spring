@@ -14,6 +14,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.ktdsuniversity.edu.exceptions.FileNotExistsException;
+
 import io.github.seccoding.web.mimetype.impl.TikaMimeTypeFilter;
 
 // @Component
@@ -71,7 +73,7 @@ public class FileHandler {
 		try {
 			resource = new InputStreamResource(new FileInputStream(downloadFile));
 		} catch (FileNotFoundException e) {
-			throw new IllegalArgumentException("파일이 존재하지 않습니다.");
+			throw new FileNotExistsException("파일이 존재하지 않습니다.");
 		}
 		
 		String mimetype = new TikaMimeTypeFilter().getMimeType(downloadFile);

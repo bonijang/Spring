@@ -81,7 +81,9 @@ public class MemberController {
 	                            @ModelAttribute MemberVO memberVO
 			                  , BindingResult bindingResult
 			                  , HttpSession session
-			                  , HttpServletRequest request) {
+			                  , HttpServletRequest request
+			                  , @RequestParam(required = false, defaultValue="/board/list") String next) {
+		
 		ModelAndView modelAndView = new ModelAndView();
 		// 접근 IP 받아와서 할당.
 		memberVO.setLatestAccessIp(request.getRemoteAddr());
@@ -91,17 +93,10 @@ public class MemberController {
 			modelAndView.addObject("memberVO", memberVO);
 			return modelAndView;
 		}
-		try {
-			MemberVO member = memberService.getMember(memberVO);
-			session.setAttribute("_LOGIN_USER_", member);
-		}
-		catch (IllegalArgumentException iae){
-			modelAndView.setViewName("member/memberlogin");
-			modelAndView.addObject("memberVO", memberVO);
-			modelAndView.addObject("message", iae.getMessage());
-			return modelAndView;
-		}
-		modelAndView.setViewName("redirect:/board/list");
+		MemberVO member = memberService.getMember(memberVO);
+		session.setAttribute("_LOGIN_USER_", member);
+
+		modelAndView.setViewName("redirect:" + next);
 		return modelAndView;
 	}
 	

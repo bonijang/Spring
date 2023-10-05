@@ -4,6 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.ktdsuniversity.edu.beans.SHA;
+import com.ktdsuniversity.edu.exceptions.AlreadyUseException;
+import com.ktdsuniversity.edu.exceptions.UserIdentityNotMatchException;
 import com.ktdsuniversity.edu.member.dao.MemberDAO;
 import com.ktdsuniversity.edu.member.vo.MemberVO;
 
@@ -26,7 +28,7 @@ public class MemberServiceImpl implements MemberService {
 	public boolean createNewMember(MemberVO memberVO) {
 		int emailCount = memberDAO.getEmailCount(memberVO.getEmail());
 		if (emailCount > 0) {
-			throw new IllegalArgumentException("Email이 이미 사용중입니다.");
+			throw new AlreadyUseException(memberVO, "Email이 이미 사용중입니다.");
 		}
 		
 		String salt = sha.generateSalt();
@@ -43,7 +45,8 @@ public class MemberServiceImpl implements MemberService {
 	public MemberVO getMember(MemberVO memberVO) {
 		String salt = memberDAO.getSalt(memberVO.getEmail());
 		if(salt == null) {
-			throw new IllegalArgumentException("아이디 또는 비밀번호가 일치하지 않습니다.");
+			throw new UserIdentityNotMatchException(memberVO, 
+					               "아이디 또는 비밀번호가 일치하지 않습니다.");
 		}
 		
 		String password = memberVO.getPassword();
@@ -54,10 +57,12 @@ public class MemberServiceImpl implements MemberService {
 		if(member == null) {
 			memberDAO.failLogin(memberVO);
 			memberDAO.blockMember(memberVO.getEmail());
-			throw new IllegalArgumentException("아이디 또는 비밀번호가 일치하지 않습니다.");
+			throw new UserIdentityNotMatchException(memberVO, 
+					                "아이디 또는 비밀번호가 일치하지 않습니다.");
 		}
 		if (member.getBlockYn().equalsIgnoreCase("Y")) {
-			throw new IllegalArgumentException("비밀번호가 3회이상 틀려 아이디가 차단되었습니다. 관리자에게 문의하세요.");
+			throw new UserIdentityNotMatchException(memberVO,
+					                "비밀번호가 3회이상 틀려 아이디가 차단되었습니다. 관리자에게 문의하세요.");
 		}
 		
 		memberDAO.successLogin(memberVO);

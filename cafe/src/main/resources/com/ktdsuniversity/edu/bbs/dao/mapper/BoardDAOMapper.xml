@@ -109,7 +109,6 @@
 		UPDATE BOARD
 		   SET SUBJECT = #{subject}
 		     , CONTENT = #{content}
-		     , EMAIL = #{email}
 		     , MDFY_DT = SYSDATE
 		     <if test='fileName != null and fileName != ""'>
 		     , FILE_NAME = #{fileName}

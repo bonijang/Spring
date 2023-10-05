@@ -2,6 +2,9 @@ package com.ktdsuniversity.edu.bbs.service;
 
 import java.io.File;
 
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -11,6 +14,7 @@ import com.ktdsuniversity.edu.bbs.vo.BoardListVO;
 import com.ktdsuniversity.edu.bbs.vo.BoardVO;
 import com.ktdsuniversity.edu.beans.FileHandler;
 import com.ktdsuniversity.edu.beans.FileHandler.StoredFile;
+import com.ktdsuniversity.edu.exceptions.PageNotFoundException;
 
 import io.github.seccoding.web.mimetype.ExtFilter;
 import io.github.seccoding.web.mimetype.MimeType;
@@ -20,6 +24,8 @@ import io.github.seccoding.web.mimetype.factory.ExtensionFilterFactory;
 @Service
 public class BoardServiceImpl implements BoardService {
 
+	private Logger logger = LoggerFactory.getLogger(BoardServiceImpl.class);
+	
 	@Autowired
 	private FileHandler fileHandler;
 	
@@ -29,8 +35,8 @@ public class BoardServiceImpl implements BoardService {
 	@Override
 	public BoardListVO getAllBoard() {
 		
-		System.out.println(boardDAO);
-		System.out.println(boardDAO.getClass().getSimpleName());
+		logger.debug(boardDAO.toString());
+		logger.debug(boardDAO.getClass().getSimpleName());
 		
 		// 게시글 갯수와 게시글 목록 이렇게 2가지를 반환하기 위해 List 만듦
 		BoardListVO boardListVO = new BoardListVO();
@@ -49,10 +55,10 @@ public class BoardServiceImpl implements BoardService {
 		
 		// 업로드에 성공했다면
 		if (storedFile != null) {
-			System.out.println(storedFile.getFileName());
-			System.out.println(storedFile.getFileSize());
-			System.out.println(storedFile.getRealFileName());
-			System.out.println(storedFile.getRealFilePath());
+			logger.debug(storedFile.getFileName());
+			logger.debug(storedFile.getFileSize()+"");
+			logger.debug(storedFile.getRealFileName());
+			logger.debug(storedFile.getRealFilePath());
 			
 			// 사용자가 입력한 정보에
 			// 파일 정보를 할당한다.
@@ -94,7 +100,7 @@ public class BoardServiceImpl implements BoardService {
 				// updateCount가 0이라는 것은
 				// 파라미터로 전달받은 id값이 DB에 존재하지 않는다는 의미이다.
 				// 이 경우, "잘못된 접근입니다." 라고 사용자에게 예외 메세지를 보내준다.
-				throw new IllegalArgumentException("잘못된 접근입니다.");
+				throw new PageNotFoundException("잘못된 접근입니다.");
 			}
 		}
 		// 예외가 발생하지 않았다면, 게시글 정보를 조회해 반환한다.
@@ -102,7 +108,7 @@ public class BoardServiceImpl implements BoardService {
 		if(boardVO == null) {
 			// 파라미터로 전달받은 id값이 DB에 존재하지 않을 경우
 			// "잘못된 접근입니다." 라고 사용자에게 예외메세지를 보낸다.
-			throw new IllegalArgumentException("잘못된 접근입니다.");
+			throw new PageNotFoundException("잘못된 접근입니다.");
 		}
 		return boardVO;
 	}
