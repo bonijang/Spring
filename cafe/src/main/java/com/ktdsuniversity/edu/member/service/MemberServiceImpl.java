@@ -2,6 +2,7 @@ package com.ktdsuniversity.edu.member.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.ktdsuniversity.edu.beans.SHA;
 import com.ktdsuniversity.edu.exceptions.AlreadyUseException;
@@ -24,6 +25,7 @@ public class MemberServiceImpl implements MemberService {
 		return emailCount == 0;
 	}
 	
+	@Transactional
 	@Override
 	public boolean createNewMember(MemberVO memberVO) {
 		int emailCount = memberDAO.getEmailCount(memberVO.getEmail());
@@ -40,7 +42,10 @@ public class MemberServiceImpl implements MemberService {
 		int insertCount = memberDAO.createNewMember(memberVO);
 		return insertCount > 0;
 	}
-
+//  @Transactional
+	// 업데이트 후 의도적으로 예외를 발생시켰을 때는
+	// @Transactional을 적용하면 안된다.
+	// 실컷 작업해놓고 Rollback되게 됨.
 	@Override
 	public MemberVO getMember(MemberVO memberVO) {
 		String salt = memberDAO.getSalt(memberVO.getEmail());
@@ -69,6 +74,7 @@ public class MemberServiceImpl implements MemberService {
 		return member;
 	}
 
+	@Transactional
 	@Override
 	public boolean deleteMe(String email) {
 		int deleteCount = memberDAO.deleteMe(email);
