@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.ktdsuniversity.edu.bbs.vo.BoardVO;
+import com.ktdsuniversity.edu.bbs.vo.SearchBoardVO;
 
 @Repository
 public class BoardDAOImpl extends SqlSessionDaoSupport 
@@ -20,15 +21,21 @@ public class BoardDAOImpl extends SqlSessionDaoSupport
 	}
 	
 	@Override
-	public int getBoardAllCount() {
-		return getSqlSession().selectOne("com.ktdsuniversity.edu.bbs.dao.BoardDAO.getBoardAllCount");
+	public int getBoardAllCount(SearchBoardVO searchBoardVO) {
+		return getSqlSession().selectOne("getBoardAllCount", searchBoardVO);
 	}
 
 	@Override
 	public List<BoardVO> getAllBoard() {
-		return getSqlSession().selectList("com.ktdsuniversity.edu.bbs.dao.BoardDAO.getAllBoard");
+		return getSqlSession().selectList("getAllBoard");
 	}
 
+	@Override
+	public List<BoardVO> searchAllBoard(SearchBoardVO searchBoardVO) {
+		return getSqlSession().selectList("searchAllBoard", searchBoardVO);
+	}
+
+	
 	@Override
 	public int createNewBoard(BoardVO boardVO) {
 		// getSqlSession().insert()는 insert한 ROW의 개수를 반환한다.
@@ -57,5 +64,6 @@ public class BoardDAOImpl extends SqlSessionDaoSupport
 		return getSqlSession().delete("deleteOneBoard", id);
 	}
 
+	
 	
 }

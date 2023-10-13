@@ -13,6 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.ktdsuniversity.edu.bbs.dao.BoardDAO;
 import com.ktdsuniversity.edu.bbs.vo.BoardListVO;
 import com.ktdsuniversity.edu.bbs.vo.BoardVO;
+import com.ktdsuniversity.edu.bbs.vo.SearchBoardVO;
 import com.ktdsuniversity.edu.beans.FileHandler;
 import com.ktdsuniversity.edu.beans.FileHandler.StoredFile;
 import com.ktdsuniversity.edu.exceptions.PageNotFoundException;
@@ -34,17 +35,19 @@ public class BoardServiceImpl implements BoardService {
 	private BoardDAO boardDAO;
 	
 	@Override
-	public BoardListVO getAllBoard() {
-		
-		logger.debug(boardDAO.toString());
-		logger.debug(boardDAO.getClass().getSimpleName());
+	public BoardListVO getAllBoard(SearchBoardVO searchBoardVO) {
 		
 		// 게시글 갯수와 게시글 목록 이렇게 2가지를 반환하기 위해 List 만듦
 		BoardListVO boardListVO = new BoardListVO();
 		
-		boardListVO.setBoardCnt(boardDAO.getBoardAllCount());
-		boardListVO.setBoardList(boardDAO.getAllBoard());
+		boardListVO.setBoardCnt(boardDAO.getBoardAllCount(searchBoardVO));
 		
+		if(searchBoardVO == null) {
+			boardListVO.setBoardList(boardDAO.getAllBoard());			
+		}
+		else {
+			boardListVO.setBoardList(boardDAO.searchAllBoard(searchBoardVO));
+		}
 		return boardListVO;
 	}
 

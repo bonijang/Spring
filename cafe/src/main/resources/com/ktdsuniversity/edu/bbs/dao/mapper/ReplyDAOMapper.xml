@@ -8,9 +8,9 @@
 	           autoMapping="true">
 		<id column="REPLY_ID" property="replyId" />
 		<association property="memberVO"
-		             javaType="com.ktdsuniversity.edu.member.vo">
+		             javaType="com.ktdsuniversity.edu.member.vo.MemberVO"
+		             autoMapping="true">
 			<id column="EMAIL" property="email" />
-			<result column="NAME" property="name" />
 		</association>
 	</resultMap>
 	
@@ -38,7 +38,7 @@
 
 	<select id="getOneReply"
 	        parameterType="_int"
-	        resultType="replyVOMap">
+	        resultMap="replyVOMap">
 		SELECT R.REPLY_ID
 		     , R.BOARD_ID
 		     , R.EMAIL
@@ -68,10 +68,10 @@
 		, RECOMMEND_CNT
 		, PARENT_REPLY_ID)
 		VALUES
-		 (SEQ_REPLIES.PK.NEXTVAL
+		 (SEQ_REPLIES_PK.NEXTVAL
 		, #{boardId}
 		, #{email}
-		, CONTENT
+		, #{content}
 		, SYSDATE
 		, SYSDATE
 		, 0

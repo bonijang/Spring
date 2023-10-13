@@ -1,5 +1,7 @@
 package com.ktdsuniversity.edu.exceptions;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.ModelAndView;
@@ -11,6 +13,8 @@ import org.springframework.web.servlet.ModelAndView;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 	
+	private Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
+	
 	/**
 	 * PageNotFoundException이 발생하면
 	 * viewPageNotFoundErrorPage 메소드가 처리한다.
@@ -18,6 +22,9 @@ public class GlobalExceptionHandler {
 	@ExceptionHandler(PageNotFoundException.class)
 	public ModelAndView viewPageNotFoundErrorPage(
 			            PageNotFoundException exception) {
+		
+		logger.error(exception.getMessage(), exception);
+		
 		ModelAndView modelAndView = new ModelAndView();
 		modelAndView.setViewName("error/404");
 		modelAndView.addObject("message", exception.getMessage());
@@ -27,6 +34,9 @@ public class GlobalExceptionHandler {
 	@ExceptionHandler({FileNotExistsException.class, MakeXlsxFileException.class
 		              , RuntimeException.class})
 	public ModelAndView viewFileErrorPage(RuntimeException exception) {
+		
+		logger.error(exception.getMessage(), exception);
+		
 		ModelAndView modelAndView = new ModelAndView();
 		modelAndView.setViewName("error/500");
 		modelAndView.addObject("message", exception.getMessage());
@@ -36,6 +46,9 @@ public class GlobalExceptionHandler {
 	@ExceptionHandler(AlreadyUseException.class)
 	public ModelAndView viewMemberRegistErrorPage(
 			            AlreadyUseException exception) {
+		
+		logger.error(exception.getMessage(), exception);
+		
 		ModelAndView modelAndView = new ModelAndView();
 		modelAndView.setViewName("member/memberregist");
 		modelAndView.addObject("memberVO", exception.getMemberVO());
@@ -46,6 +59,9 @@ public class GlobalExceptionHandler {
 	@ExceptionHandler(UserIdentityNotMatchException.class)
 	public ModelAndView viewUserIdentifyNotMatchExceptionErrorPage(
 			            UserIdentityNotMatchException exception) {
+		
+		logger.error(exception.getMessage(), exception);
+		
 		ModelAndView modelAndView = new ModelAndView();
 		modelAndView.setViewName("member/memberlogin");
 		modelAndView.addObject("memberVO", exception.getMemberVO());

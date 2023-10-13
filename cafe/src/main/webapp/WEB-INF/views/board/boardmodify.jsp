@@ -60,7 +60,7 @@
 			<label for="subject">제목</label>
 			<input id="subject" type="text" name="subject" value="${boardVO.subject}" />
 			
-			<label for="email">첨부파일</label>
+			<label for="file">첨부파일</label>
 			<div>
 				<input id="file" type="file" name="file" />
 				현재 업로드된 파일: ${boardVO.originFileName}
